@@ -1,0 +1,743 @@
+# File-based Intellectual Space Standard (FISS) — Full Documentation for AI (v1.0.0)
+
+> Normative core: /llms.txt
+
+
+---
+
+## Route: /
+
+# FISS — File-based Intellectual Space Standard
+
+**Intellectual space** is the logical system of project knowledge, rules, state, context, and artifacts that supports collaboration between humans and AI agents. It is independent of storage technology.
+
+In practice, its foundation can be organized as a `FISS/` directory in the project root. Within this directory, the team maintains useful context and links to other sources: code, documentation, task trackers, and tools.
+
+**FISS (File-based Intellectual Space Standard)** is the filesystem-based realization of the intellectual-space model. It describes how to organize the `FISS/` directory so that a team member or AI agent can locate needed information and understand when to read it.
+
+The standard defines organization, navigation, and the synchronization state needed to hand the intellectual space between work items; the project team defines the content and general work lifecycle. FISS does not prescribe product architecture, development methodology, toolchains, task tracking, or project documents beyond two required root files. Existing issue tracking, documentation, and version-control systems continue to fulfill their functions.
+
+In this document, **"MUST"**, **"REQUIRED"**, and **"SHALL"** indicate normative requirements; **"SHOULD"** and **"RECOMMENDED"** indicate recommendations; **"MAY"** indicates optional choices. Examples do not require reproducing their exact structure.
+
+
+---
+
+## Route: /intellectual-space
+
+## Intellectual Space
+
+An intellectual space is an abstract logical space that supports collaboration between people and AI agents. It describes knowledge, rules, state, context, and artifacts by their purpose and relationships rather than by their storage technology.
+
+FISS is the filesystem-based standard that realizes this model.
+
+### Logical Model
+
+An intellectual space contains logical artifacts. A logical artifact is identified by its purpose, not by a path or format. It may represent knowledge, a rule, current state, a decision, a plan, evidence, or another project concern.
+
+Artifacts may relate to one another. The space should make those relationships understandable and should help a person or agent determine which context applies to a particular task.
+
+Knowledge is canonical by default. It is derived only when explicitly marked with the exact, non-localized marker `Derived from:` and linked to its source or sources. The same knowledge must not be maintained independently in multiple places: one representation remains canonical and every other representation is derived.
+
+An external mechanism is a mechanism used by the intellectual space but not part of the project or its intellectual space. Skills, task trackers, documentation systems, version-control systems, tools, and processes are examples. External mechanisms remain independent, while project rules may override how they are applied without modifying the mechanisms themselves.
+
+### Principles
+
+**ZLOC** (**Z**ero **L**oose, zero **O**verhead **C**ontext) — do not lose useful context or create unnecessary context.
+
+ZLOC defines the overall goal of an intellectual space. The seven 7C principles describe its organization and maintenance:
+
+1. <a id="principle-compact"></a>**Start small.** (Compact) Expand the space when new information or context is needed.
+
+2. <a id="principle-context-aware"></a>**Make applicability visible.** (Context-aware) Organize information so that it is possible to determine when it is needed.
+
+3. <a id="principle-context-first"></a>**Separate navigation from content.** (Context-first) Navigation selects context, while detailed knowledge and rules reside in content artifacts.
+
+4. <a id="principle-classified"></a>**Distinguish information classes.** (Classified) Durable knowledge, current state, and rules for changing state serve different purposes.
+
+5. <a id="principle-canonical"></a>**Keep canonical sources clear.** (Canonical) Copies, summaries, and projections MUST NOT silently become competing sources of truth.
+
+6. <a id="principle-continuous"></a>**Maintain context.** (Continuous) Timely capture useful changes to the project's context.
+
+7. <a id="principle-composable"></a>**Keep external mechanisms independent.** (Composable) Project rules MAY adapt how they are applied without incorporating their storage, lifecycle, or implementation into the space.
+
+Other standards may realize the intellectual-space model using databases, APIs, data lakes, or other mechanisms. FISS defines its filesystem realization in the remaining documentation.
+
+
+---
+
+## Route: /limits
+
+## Standard Boundaries and Scope
+
+Methods, concepts, and tools mentioned in this document — such as DDD (Domain-Driven Design), ADR (Architecture Decision Records), task trackers, and agent skills — are outside FISS. Mentioning them illustrates how a project can organize relevant materials. It does not make these methods mandatory nor incorporate their rules into FISS requirements.
+
+The team independently selects how to describe domain models, record decisions, plan and track work, and choose tools and enforcement mechanisms. FISS specifies how to arrange selected materials and provide navigation, and defines only the synchronization state needed to hand the intellectual space between work items. It does not define a general task lifecycle or require hooks, CI/CD, version control, or a task tracker.
+
+
+---
+
+## Route: /start
+
+## Quick Start
+
+A conforming minimal structure consists of two required files:
+
+```text
+FISS/
+├── INDEX.md
+└── BOOTSTRAP.md
+```
+
+- **`FISS/INDEX.md` — Entry point.** Contains links and read conditions for materials.
+- **`FISS/BOOTSTRAP.md` — Baseline context.** Provides initial orientation in the project.
+
+Minimal `FISS/INDEX.md`:
+
+```markdown
+# Project Intellectual Space
+
+- [Baseline Context](BOOTSTRAP.md)
+  Read when: beginning work on the project or onboarding to the space.
+```
+
+In `FISS/BOOTSTRAP.md`, briefly explain the purpose of the project, key rules and constraints, critical definitions, and peculiarities without which the project could easily be misunderstood.
+
+This file must remain concise. Information needed only for a specific area of work should be placed in that area. This approach implements the [“Start small” principle](./intellectual-space.md#principle-compact): in a small project, all substantive content can fit within `FISS/BOOTSTRAP.md`; `FISS/INDEX.md` remains mandatory. Artificially splitting short text is not required — information and structures are added only when actual content or context needs arise.
+
+For the team, it is recommended to add a link to `FISS/INDEX.md` in the project README or another familiar starting point. If the project uses `AGENTS.md` or another root instruction file for AI agents, that file MUST direct agents to `FISS/INDEX.md` and MUST NOT duplicate space content.
+
+
+---
+
+## Route: /standard
+
+## Referencing the Standard
+
+In `FISS/INDEX.md`, it is recommended to include a link to the standard and the edition in use. For maximum resilience, it is recommended to provide both the primary link to the official standard website (`https://fiss.vorozhko.ru`) and a fallback link to its official Git repository mirror on GitHub: [`https://github.com/AndreyVorozhko/fiss`](https://github.com/AndreyVorozhko/fiss) for scenarios when the site is unavailable or work is conducted in an offline environment.
+
+For the edition in use, provide a permanent link to its specific version or page (for example, the versioned AI context `https://fiss.vorozhko.ru/v1.0.0/llms.txt` or the GitHub mirror `https://github.com/AndreyVorozhko/fiss`).
+
+Recommended example of providing both links in `FISS/INDEX.md`:
+
+```markdown
+- [File-based Intellectual Space Standard](https://fiss.vorozhko.ru/v1.0.0/llms.txt)
+  Read when: creating or modifying the intellectual space structure or verifying conformance.
+- [File-based Intellectual Space Standard (GitHub Mirror)](https://github.com/AndreyVorozhko/fiss)
+  Read when: https://fiss.vorozhko.ru is unavailable or working in an offline environment.
+```
+
+Automated validation tools (such as rule `FISS-R011` in `fiss-lint`) accept either link individually as well as having both links present.
+
+Reading the entire standard before each task is not required.
+
+
+---
+
+## Route: /navigation
+
+## Navigation Model
+
+### Indexes Determine Context Applicability
+
+`FISS/INDEX.md` is the primary entry point. Indexes of individual areas are also named `INDEX.md` and reside within corresponding directories.
+
+The core mission of an index is to answer: **"when is this material applicable context for work?"**, rather than trying to predict low-level filesystem operations (such as reading versus modifying a file).
+
+The `Read when:` marker designates a **context applicability condition** (entry into working context). It is not merely a mechanical command to open a file; it specifies the situational trigger under which the material must be loaded into the working context of a person or AI agent.
+
+Every navigation entry in an index file follows a strict three-element pipeline:
+
+```text
+navigation link
+    ↓
+reading condition marker (applicability marker)
+    ↓
+non-empty condition (situational trigger)
+```
+
+The standard establishes a **strict two-line format** for every navigation link:
+1. First line — Markdown link to the target document or index: `- [Title](target)`
+2. Second line — An attached line indented by 2 spaces containing an explicit read condition marker and a non-empty condition: `  Read when: condition`
+
+The read condition marker MUST always be the English text `Read when:`. It MUST NOT be localized or translated into other languages. This ensures deterministic parsing by automated tools and linters (such as `fiss-lint`) without the overhead or ambiguity of language detection.
+
+Example root index for a project with multiple areas:
+
+```markdown
+# Project Intellectual Space
+
+- [Baseline Context](BOOTSTRAP.md)
+  Read when: beginning work on the project or onboarding to the space.
+- [Domain Knowledge](knowledge/subject/INDEX.md)
+  Read when: modifying business rules or working with domain concepts.
+- [Project Architecture](knowledge/project/architecture.md)
+  Read when: modifying system components or configuring the environment.
+- [Current State](state/INDEX.md)
+  Read when: risks, open questions, or temporary constraints may affect the task.
+```
+
+### Context Entry and Why There Is No “Modify when”
+
+A natural question may arise: if we not only read files but also modify them, shouldn't there be a symmetric marker like `Modify when:`?
+
+In FISS, there is **intentionally no `Modify when` marker**, and it should not be introduced for fundamental architectural reasons:
+
+1. **`Read when` defines entry into context, not a filesystem operation.** The index defines under what conditions the material becomes part of the task's working context.
+2. **Modifying a file is a natural consequence of working in that context.** If an agent or engineer is modifying project architecture, they must consult the material describing architecture (`Read when: modifying system components...`), and upon completing the change, update it to align with the new reality.
+3. **FISS does not manage file lifecycles.** The standard defines intellectual space organization and navigation, leaving lifecycles and processes to the project. Introducing `Modify when` would turn navigation into a file lifecycle management language and overburden navigation syntax with redundant markers.
+
+The context operational model is straightforward:
+
+```text
+INDEX
+  ↓
+Read when (determines applicable context)
+  ↓
+agent or engineer reviews the material
+  ↓
+works with it / utilizes context in the task
+  ↓
+if work altered what the material describes
+  ↓
+material is updated to reflect the outcome
+```
+
+The index answers: **"when is this material needed?"**, without trying to anticipate what specific operations the agent will perform after opening the document.
+
+### Eliminating Ambiguity
+
+A frequent anti-pattern in loose documentation is formatting links as passive annotations or pointing directly to bare directories:
+
+```markdown
+- [Project Knowledge](knowledge/project/) - Contains project knowledge.
+```
+
+This violates the standard on multiple counts:
+1. **Targeting a bare directory**: A navigation link MUST target a specific file (`.md`) or an area's `INDEX.md`, not an untyped filesystem directory.
+2. **Missing marker**: The required read condition marker (`Read when:`) is absent.
+3. **Passive description instead of condition**: The phrase "Contains project knowledge" states what is stored inside, rather than explaining the situational trigger — the working situation where a person or agent must load that context.
+4. **Single-line format**: The read condition MUST reside on a separate line indented by 2 spaces.
+
+The label "Domain Knowledge" only describes content. The read condition "Read when: modifying business rules..." helps determine whether the material is applicable context for the current task — this implements the [“Make applicability visible” principle](./intellectual-space.md#principle-context-aware).
+
+Enforcing a strict two-line format and an explicit marker makes navigation deterministic and reliably verifiable: automated linters (e.g., `fiss-lint`) and validation skills (`fiss-validate`) can unambiguously check navigation integrity without heuristic guesswork.
+
+Following the [“Separate navigation from content” principle](./intellectual-space.md#principle-context-first), an index must remain concise: links, context applicability conditions, and necessary navigational notes. Detailed content belongs in the referenced documents. This enables moving from general context to specifics on demand.
+
+### An Area Can Be a File or a Directory
+
+An **area** is a thematically coherent unit in an intellectual space, such as project knowledge or open questions.
+
+| Form | When to Use | Naming Rule |
+| --- | --- | --- |
+| Single file | The topic fits in one document | The filename is determined by the project |
+| Directory with `INDEX.md` — composite area | The topic spans multiple documents | `INDEX.md` serves as the entry point |
+| Directory without `INDEX.md` — container | Groups related areas together | Links to child areas reside in the enclosing index |
+
+For example, `FISS/knowledge/` can serve as a container:
+
+```text
+FISS/
+├── INDEX.md
+├── BOOTSTRAP.md
+└── knowledge/
+    ├── project/
+    │   └── architecture.md
+    └── subject/
+        ├── INDEX.md
+        ├── access.md
+        └── notifications.md
+```
+
+In this example, the root index links to `FISS/knowledge/project/architecture.md` and `FISS/knowledge/subject/INDEX.md`. The index `FISS/knowledge/subject/INDEX.md` navigates its area materials. A separate `FISS/knowledge/INDEX.md` is not required.
+
+Filenames of single-file areas and other substantive documents, like `access.md`, are determined by the project. The standard reserves the names `INDEX.md` for navigation points and `BOOTSTRAP.md` for the required baseline context.
+
+All used areas must be reachable through navigation from `FISS/INDEX.md`. The index of a composite area must navigate to its materials and child areas; through a container, links point directly to nested areas. Every index link must adhere to the strict two-line format with a read condition marker.
+
+### Expanding an Area
+
+When a single file outgrows its scope, it can be replaced with a directory containing an index:
+
+```text
+Before:                     After:
+FISS/state/                 FISS/state/
+└── open-questions.md        └── open-questions/
+                                ├── INDEX.md
+                                ├── payment-model.md
+                                └── access-policy.md
+```
+
+When making this transition, update all incoming links. The new `INDEX.md` follows the same navigation rules as the root index.
+
+### Structure for Future Decomposition
+
+In single-file areas, it is recommended to design a modular structure from the outset that can easily be divided into separate files as the document grows. This helps adhere to the [“Start small” principle](./intellectual-space.md#principle-compact): starting with a simple single file while proactively preventing friction during future decomposition.
+
+When the material within a file is organized into logically self-contained sections and subsections, each section becomes a natural candidate for extraction into a separate document or child area without having to untangle or rewrite intertwined text.
+
+For example, an initial `FISS/knowledge/project/architecture.md` might contain:
+
+```markdown
+# Frontend
+
+## General Rules
+
+- In `admin` and `front`, use TypeScript, not JavaScript.
+- In TypeScript, do not use trailing semicolons `;`.
+- Do not duplicate types between pages.
+- Prefer a composable-first approach for backend interactions.
+
+## Admin
+
+- `admin` — Nuxt 4 SPA + `naive-ui`; SSR is disabled.
+- `admin` SPA serves two hosts: admin host for `/admin` and business host for `/business`; do not add cross-host redirects that expose the admin host to business users.
+- Use `admin/app/utils/apiFetch.ts` for backend requests, never direct `fetch`.
+
+# Cache
+
+## Redis Clients and DB Partitioning
+
+- Redis is partitioned by responsibility:
+  - DB0 / `snc_redis.token_store` / prefix `token:` — only refresh-token whitelist and auth/token storage.
+  - DB1 / `snc_redis.app_cache` / prefix `cache:` — only application cache.
+- Do not store application cache in DB0.
+- Do not store auth/session/token data in DB1.
+- Cache is not a source of truth. PostgreSQL and domain services remain authoritative.
+
+## Application Cache Rules
+
+- Every application cache entry must have an explicit TTL.
+- Cache key must account for all request parameters and context values that can alter the response.
+- Cache key must be deterministic and stable for equivalent requests.
+- Never include raw user input, tokens, cookies, secrets, raw personal data, full URL with query strings, or request bodies in cache keys.
+- If user input is unavoidable in a cache key in the future, normalize it first and prefer a safe hash/fingerprint over raw values.
+- When adding or modifying a cache, specify an invalidation strategy in the same task.
+- If invalidation is coarse-grained, document this explicitly and keep the TTL conservative.
+```
+
+When this file grows large, its clean modular structure allows it to be naturally split into, for example:
+
+- `FISS/knowledge/project/frontend/common-rules.md`
+- `FISS/knowledge/project/frontend/admin.md`
+- `FISS/knowledge/project/cache.md` (or `FISS/knowledge/project/cache/INDEX.md`)
+
+
+---
+
+## Route: /areas
+
+## Information Areas
+
+The standard defines optional information areas. A team creates only what it needs. Structuring information into distinct areas realizes the [“Distinguish information types” principle](./intellectual-space.md#principle-classified): durable knowledge, current state, and rules governing changes serve different purposes. Canonicality belongs to particular knowledge and its source, not to an area. An area can be represented by a single file or by a directory with `INDEX.md`; its structure should be organized modularly from the start, designing sections with future decomposition in mind. Paths in the table show directory-based setups:
+
+| Area | Purpose | Example Contents |
+| --- | --- | --- |
+| `FISS/knowledge/subject/` | Domain knowledge the project operates within | Concepts, business rules, processes, domain invariants |
+| `FISS/knowledge/project/` | Durable knowledge about the project itself | Architecture, project terms, environment, conventions, practices |
+| `FISS/state/` | Current information that can affect work | Handoff synchronization state, open questions, active risks, temporary constraints |
+| `FISS/overrides/` | Project rules for applying agent skills | Skill behaviors and lifecycles, templates, verification criteria, human governance |
+| `FISS/human/knowledge/` | Standalone knowledge primarily for humans | Observations, personal context, explanatory notes |
+| `FISS/human/hmm/` | Derived Human Mental Model representations | Domain concept maps, architecture diagrams |
+
+The team may add custom areas. Standard structural and navigation rules apply to them.
+
+### Knowledge: Domain and Project
+
+`FISS/knowledge/subject/` answers the question **"What must be understood about the domain?"** It describes entities, terminology, processes, rules, and invariants. The name `subject` is not tied to any mandatory methodology, including DDD.
+
+`FISS/knowledge/project/` answers the question **"What must be known about the project structure and workflows?"** It describes architecture, component relationships, environments, tooling, conventions, common pitfalls, and known workarounds.
+
+The `FISS/knowledge/` directory functions as a container for knowledge areas. Inside it, a project MUST establish a `subject` area (directory `subject/` or file `subject.md`), a `project` area (directory `project/` or file `project.md`), or both. Placing files directly in the root of `FISS/knowledge/` (such as `FISS/knowledge/architecture.md` or `FISS/knowledge/rules.md`) is prohibited by the standard — all durable knowledge must belong to either domain knowledge (`subject`) or project knowledge (`project`).
+
+Glossaries can span both areas. Domain terms belong in `FISS/knowledge/subject/`, while component names, internal abbreviations, and project-specific terms belong in `FISS/knowledge/project/`. If a term shares the exact meaning in both areas, define it once and cross-reference. If a word has different meanings, define each separately and explicitly identify its applicable scope.
+
+Durable knowledge may also evolve over time. Its distinction from current state lies in purpose: it supports understanding and working on the project across multiple tasks.
+
+### State
+
+`FISS/state/` describes the **current situation** that can affect work: open questions, active risks, and temporary constraints.
+
+FISS requires handoff semantics, not a particular file. A project may represent the handoff in an existing canonical state mechanism or in a separate operational artifact. `FISS/state/fiss-handoff.md` is a recommended default, not a mandatory path; resolve any artifact location using the standard operational-artifact rules and expose it through applicable navigation. The record identifies the FISS synchronization state and current work item, linking to an external canonical task source rather than duplicating task status or maintaining a task registry.
+
+The state is `synchronized` when FISS-relevant outcomes are recorded and the space is ready for another independent work item. It is `pending` while a work item is current or its outcomes remain to be synchronized, and `unresolved` when a blocker needs a decision. Before starting new independent work, an agent determines the current state. From `synchronized`, the agent records the new work as `pending` before substantive work unless an applicable project-defined mechanism performs that transition. The identified work may continue while `pending`; different independent work may not begin. Projects may define another transition mechanism, but hooks, CI, version control, and task trackers are not required by FISS.
+
+Standalone state documents may reside directly within `FISS/state/`. A registry or collection of items (such as ADRs, risks, open questions, or tasks) MUST NOT be scattered loosely across `FISS/state/`. Such a registry MUST be structured either as a dedicated composite area with its own `INDEX.md` (e.g. `FISS/state/adr/`, `FISS/state/risks/`, `FISS/state/open-questions/`), or as a consolidated single-file area (e.g. `FISS/state/open-questions.md`).
+
+If current state is already tracked in an external tool, link to that authoritative source. For example, when tasks are tracked in an issue tracker, FISS must not create a duplicate tracker for the same items. Rules for transitioning state, if the project customizes skill behavior, reside in `FISS/overrides/`.
+
+### Material Primarily for Humans
+
+The entire intellectual space should remain accessible to humans. The `FISS/human/` area is used when a team wants to separate materials that do not need to be included in routine agent context.
+
+- `FISS/human/knowledge/` contains standalone knowledge primarily intended for people. Like other FISS knowledge, it is canonical by default unless explicitly marked as derived.
+- `FISS/human/hmm/` contains derived Human Mental Model representations that help humans navigate and reason about complex systems. This area is intended for projects that need such representations; there is no need to create it prematurely.
+
+The `FISS/human/` directory also functions as a container. Inside it, a project MUST establish a `knowledge` area (directory `knowledge/` or file `knowledge.md`), an `hmm` area (directory `hmm/` or file `hmm.md`), or both. Placing files directly in the root of `FISS/human/` outside these areas is prohibited.
+
+HMM representations can be concept maps, architecture overviews, and dependency charts. Every HMM material must contain the exact English marker `Derived from:` followed by Markdown links to all material sources needed to understand and verify its origin. Sources are not limited to `FISS/human/knowledge/`; they may reside in `FISS/knowledge/project/`, `FISS/knowledge/subject/`, `FISS/state/`, `FISS/human/knowledge/`, or another relevant location. When a source changes, related HMM materials should be reviewed. Their existence alone never makes them canonical.
+
+The name `FISS/human/` denotes intended audience and purpose, not access restriction. Document applicability is determined by read conditions and project policies.
+
+
+---
+
+## Route: /maintenance
+
+## Maintaining the Intellectual Space
+
+### Current Task and Outcomes
+
+Operational task materials may be kept in a designated task workspace, such as `_currenttask/` outside `FISS/`. This workspace can house task statements, research, plans, and intermediate artifacts, including operational artifacts described in the skills section. It serves as an active workspace for the task; its organization is defined by the team. Being located outside `FISS/` does not exclude these materials from the broader intellectual space of the project.
+
+If a project uses such a workspace, document its rules in an appropriate project document: for example, in `FISS/knowledge/project/` or in `FISS/overrides/` if overriding skill defaults.
+
+Workflow documentation should specify applicable project rules:
+
+- Which materials are temporary and what happens to them upon task completion;
+- What results must be transferred into durable knowledge and when;
+- Where task state is tracked;
+- Which files are committed to version control and which are excluded.
+
+It can also describe how logical artifacts used by skills map to project files or external systems.
+
+Thus, FISS accommodates both long-term knowledge and immediate state. Workflow rules tie them directly to ongoing team work.
+
+### Updating Materials
+
+The context applicability condition (`Read when`) declared in navigation serves as a natural guide for maintenance: if a task operated within the situation described by that condition and modified domain rules, architecture, decisions, or project state, the materials describing them must be brought into alignment with the new reality. Updating a document requires no separate modification marker — it is the direct consequence of working within the applicable context.
+
+To realize the [“Maintain context” principle](./intellectual-space.md#principle-continuous), it is recommended to incorporate a context audit into the standard task completion checklist:
+
+* Did valuable new knowledge emerge that benefits subsequent tasks? Transfer it to the appropriate area or primary external source.
+* Did rules, architectural decisions, constraints, or active state change? Update the affected documents.
+* Were files added, moved, or renamed? Update indexes, read conditions, and incoming links.
+* Did a canonical source change? Review related materials marked `Derived from:` and update or deprecate them as needed.
+
+In practice, this check is conveniently performed as part of task completion: review the work outcomes and determine what should be **preserved**, **handed off to the owner of the respective material**, or **discarded** if the outcome has no durable value. For example, a FISS maintenance skill can be created to classify outcomes in this way after each task and **consider work complete only after integrating** all results of durable value into the relevant sections of the intellectual space. For an individual developer, this may mean that after completing the current task, they should not take on the next task until the project context for the current task has been updated in FISS.
+
+In parallel work, this does not require waiting for other tasks to complete: if a task depends on an outcome that is not yet integrated into FISS, that outcome should be explicitly included in its working context. Once the dependent work is complete, the outcome should be integrated into FISS in the regular manner.
+
+This is the recommended maintenance workflow; specific roles and review moments are determined by the team.
+
+
+---
+
+## Route: /sources
+
+## Canonical Sources, Links, and History
+
+### Avoiding Contradictions
+
+A **canonical source (source of truth)** is the authoritative location for particular knowledge or a class of information. Knowledge in FISS is canonical by default: if material does not contain `Derived from:`, it is a canonical source for the knowledge it contains. Canonicality is not assigned by directory or area.
+
+Projects may designate authoritative external sources or precedence rules for information classes. For example:
+
+| Information Class | Potential Canonical Source |
+| --- | --- |
+| Task status | Issue tracker |
+| Architecture decisions | ADR repository |
+| Project conventions | Relevant documents in `FISS/knowledge/` |
+| File change history | Version-control system |
+
+This illustrates separation of responsibilities rather than a fixed FISS hierarchy. Project rules should be placed where they will be encountered when working in that context; broad rules belong in `FISS/BOOTSTRAP.md`.
+
+In accordance with the [“Keep canonical sources clear” principle](./intellectual-space.md#principle-canonical), the same knowledge MUST NOT be maintained independently in multiple places. If a copy, summary, map, diagram, or other representation is useful, exactly one representation remains canonical and every other one must be explicitly derived.
+
+The only derivation marker is the exact English text `Derived from:`. It is never localized and must be followed by Markdown links leading directly to the source materials. Include every material source needed to understand the representation's origin and verify it:
+
+```markdown
+Derived from:
+- [Project architecture](../../knowledge/project/architecture.md)
+- [Payment domain](../../knowledge/subject/payment.md)
+```
+
+This rule concerns duplicated knowledge, not matching fragments of text or useful differences in representation. A concise architecture diagram and a detailed description can coexist when the diagram identifies the description and any other material sources through `Derived from:`. Derived knowledge does not become canonical merely by existing, and it should be reviewed when its sources change.
+
+When sources conflict, do not silently pick a preferred version. Apply the designated source rule. If no rule exists, resolving the conflict requires an explicit team decision.
+
+### Linking Materials
+
+Relationships between artifacts are expressed with standard Markdown links and concise explanations. A formal typed relationship syntax is not required.
+
+For example, in `FISS/state/adr/payment-decision.md`:
+
+```markdown
+This decision resolves [the open question on payment models](../../state/open-questions/payment-model.md).
+```
+
+The two-line format with an explicit read condition marker (`Read when:`) is required for navigation links in indexes. In substantive documents, a brief explanatory note describing the relationship is sufficient.
+
+### When In-Document History is Needed
+
+Change logs inside individual documents are optional. For files under Git version control, technical revision history is already tracked by the repository.
+
+Status or changelog notes are valuable when their omission could lead to misapplying the material. For instance, a decision record can indicate whether it is active, superseded, or withdrawn, with a link to its successor. The team determines whether individual documents require internal changelogs.
+
+
+---
+
+## Route: /skills
+
+## FISS and Agent Skills
+
+Skills belong to the intellectual space in a broad sense. However, skill formats, storage, installation, discovery, and invocation lie outside FISS. The standard does not require storing skills inside `FISS/`.
+
+Interactions with external skills rely on the [“Keep external mechanisms independent” principle](./intellectual-space.md#principle-composable): external mechanisms remain independent, while the standard supports a project-level override mechanism to adapt their behavior without modifying the mechanisms themselves.
+
+If the project uses overrides, the root index must include a link to `FISS/overrides/INDEX.md` with the read condition "Read before using any skill." For example:
+
+```markdown
+- [Project Overrides](overrides/INDEX.md)
+  Read when: using or preparing to use any skill.
+```
+
+### Operational Artifacts
+
+An **operational artifact** is an artifact that is not merely descriptive, but is actively utilized during work as a functional component of the process.
+
+An intellectual space comprises more than static knowledge and instructions. It includes operational artifacts that guide a task through its lifecycle. For example, a statement defines the task, a plan guides execution, and verification evidence substantiates task completion.
+
+One possible workflow:
+
+```text
+intent → statement → research → decisions → plan → changes → result → verification
+```
+
+This is an illustrative workflow, not a FISS mandate. Process stages may produce operational artifacts; a dedicated file for each stage is not required. The operational nature is determined by an artifact's role in the workflow, not its format, directory, or retention period.
+
+A skill must reference operational artifacts by logical purpose and may define a **default filename**. For example, a planning skill creates a plan in `plan.md`, while an execution skill reads and executes that artifact. Skills operating on the same artifact must use consistent logical naming and default filenames, or adhere to project-defined mappings.
+
+The project specifies the location of operational artifacts in a relevant document in `FISS/overrides/`:
+
+```markdown
+Operational artifacts for the current task are located in `_currenttask/`.
+```
+
+In this case, the filename `plan.md` specified by the skill resolves to `_currenttask/plan.md`.
+
+```markdown
+The task plan operational artifact is located at `_currenttask/task-plan.md`.
+```
+
+This rule specifies the full path for a particular artifact and overrides its default filename. If both rules exist, `_currenttask/task-plan.md` is used for the plan, while other operational artifacts use the shared directory and their default filenames. Paths in these examples are relative to the project root.
+
+Before reading or creating an operational artifact, an agent MUST resolve its location in the following order:
+
+1. Explicit project path for the specific logical artifact;
+2. Shared task-artifact directory plus the skill default filename;
+3. Repository convention or skill default behavior.
+
+Skills using the same operational artifact within a task must resolve to the same location. If an existing artifact is in another location or rules conflict, resolve discrepancies via canonical source rules rather than creating duplicate instances. For parallel tasks, provide separate task workspaces or another unambiguous method to distinguish artifacts.
+
+### Project Overrides
+
+`FISS/overrides/` contains project-specific overrides to the rules and behavior of **mechanisms external to the project and its intellectual space** that are used by the project. For example, skills. Project-specific rules and behaviors that do not override external mechanisms should be stored in `FISS/knowledge/project/`.
+
+A skill should embody portable reasoning and procedures. A project may tailor where artifacts reside, how records are formatted, what constitutes acceptable verification, and when an agent must pause for human review. These project-specific rules should not be hardcoded into skills, which would undermine portability.
+
+For such rules, an optional composite area `FISS/overrides/` is recommended:
+
+```text
+FISS/
+├── INDEX.md
+├── BOOTSTRAP.md
+└── overrides/
+    ├── INDEX.md
+    ├── skills/
+    │   ├── open-questions.md
+    │   ├── adr.md
+    │   ├── risks.md
+    │   ├── task-execution.md
+    ├── governance.md
+    ├── artifacts.md
+    ├── templates.md
+    ├── verification.md
+    ├── orchestration.md
+    ├── context-and-memory.md
+    └── style.md
+```
+
+This is an illustrative structure, not a mandatory set of files. Create only documents where the project genuinely customizes or standardizes a rule. `FISS/overrides/INDEX.md` remains the single entry point as the area expands. Maintain a single entry point, avoiding parallel competing rule definitions.
+
+`FISS/overrides/INDEX.md` links to active override documents with read conditions. Applicability is determined by the subject matter, not by skill names: skills can be renamed, combined, or refactored. Skill names are not needed for navigation. For example:
+
+```markdown
+# Project Overrides
+
+- [Open Questions](skills/open-questions.md)
+  Read when: adding, reviewing, or resolving open questions.
+- [Verification Criteria](verification.md)
+  Read when: planning verification and confirming completion.
+```
+
+In this example, `skills/` is a container within `FISS/overrides/`: links to its documents reside in `FISS/overrides/INDEX.md`. A standalone `FISS/skills/` area is not created. Rules, state transitions, and lifecycle behaviors for skills reside in overrides, while active questions, risks, and decisions belong in their respective areas or external tools.
+
+Before using any skill, an agent MUST read the override entry point if it exists, and select applicable documents according to read conditions. Reading all override documents is not required. This is a foundational rule for agent-project interaction that need not be repeated in each skill.
+
+In the absence of an explicit rule, the agent applies explicit project rules, followed by detected repository conventions, and finally skill defaults. An override replaces only the behavior it explicitly defines; other skill rules remain intact. Conflicts with other explicit project rules are resolved via source rules. Overrides do not bypass runtime execution limits; if a rule cannot be applied, the agent must report the situation to a human.
+
+Overrides are canonical human-readable documents, not opaque variable tables. They articulate rules directly and reference existing knowledge, external systems, and project artifacts. A separate YAML configuration with identical settings is unnecessary. Where tools require machine formats, they must be generated as derived knowledge of canonical documents and contain `Derived from:` with links to those documents.
+
+### What Can Be Overridden
+
+The following categories outline common project rule customizations. All paths in the last column are relative to the project root:
+
+| Category | What the Document Governs | Example Files |
+| --- | --- | --- |
+| Skill Lifecycles and Behaviors | States, transitions, resolution criteria for ADRs, open questions, risks, task execution, terms, mental model reconciliation, branches and merges | `FISS/overrides/skills/open-questions.md`, `FISS/overrides/skills/adr.md`, `FISS/overrides/skills/risks.md` |
+| Governance and Autonomy | Mandatory human approvals, agent autonomy levels, human review criteria, acceptable plan deviations | `FISS/overrides/governance.md` |
+| Artifacts and Paths | Locations of ADRs, domain knowledge, open questions, risks, glossaries; shared task artifact directory and specific artifact paths | `FISS/overrides/artifacts.md` |
+| Templates and Formats | Structures of ADRs, task plans, risk logs, prescriptive rules, commit messages, PR descriptions | `FISS/overrides/templates.md` |
+| Verification | Verification commands, acceptable evidence, completion criteria, required independent reviews | `FISS/overrides/verification.md` |
+| Orchestration | Retry limits, model and role assignments, disambiguation rules, concurrency, worktrees | `FISS/overrides/orchestration.md` |
+| Context and Memory | Context compaction thresholds, checkpoints, knowledge consolidation, obsolescence signals | `FISS/overrides/context-and-memory.md` |
+| Language and Style | Documentation languages, communication register, author voice, cognitive bias checks | `FISS/overrides/style.md` |
+
+### Example: Overriding Open Questions Lifecycle
+
+A skill's built-in default may allow a `Deferred` status. If the project does not allow deferring open questions when they can be resolved immediately, the rule should be defined in `FISS/overrides/skills/open-questions.md`:
+
+```markdown
+# Open Questions
+
+## Lifecycle
+
+Status describes the state of knowledge, not the state of workflow:
+
+- `Active` — uncertainty exists and remains significant; investigation or dependency does not change this status.
+- `Needs review` — evidence indicates context change or violation of a "Review if" condition; unknown freshness or evidence conflict alone does not change status.
+- `Resolved` — sufficient justification exists to consider the question resolved, with "Resolved via" specified; this is an outcome of resolution, not an active tracking status.
+- `Superseded` — question is subsumed by another question or decision; link to replacement in resolution history.
+- `Withdrawn` — original formulation is invalid or no longer has basis; record rationale in resolution history.
+
+Do not introduce separate `Investigating` and `Blocked` statuses: a question under study or awaiting dependency remains `Active`, with dependencies noted in context. Do not use `Deferred`: the project does not permit deferring open questions.
+
+In active record templates, only `Active` and `Needs review` are permitted. The "Why deferred" field is omitted; transition to `Deferred` is removed from reconciliation procedures. Waiting on research or dependencies is not grounds for resolving a question.
+```
+
+This document does not modify the skill itself. It clarifies how the skill must be applied in this specific project, explaining the rationale for divergence from default behavior.
+
+### Operational Artifacts and Portability
+
+A skill working with an operational artifact must not assume its specific location.
+
+For example, a skill may operate on a task plan and set a specific filename for it, such as `plan.md`, but must not assume that this file is always located in:
+
+```text
+_currenttask/plan.md
+```
+
+We can define a common directory for all operational artifacts, for example in `FISS/overrides/artifacts.md` like this:
+
+```md
+# Skills
+
+All operational artifacts in the project are stored in the `_currenttask/` directory.
+```
+
+If it is necessary to change the artifact's filename (when it is specified inside the skill as `plan.md`), this is an override of skill behavior, which can be configured in `FISS/overrides/skills/writing-plans.md` like this:
+
+```md
+# Paths
+
+The operational artifact of the current task plan must be located at `_currenttask/task-plan.md`
+```
+
+
+---
+
+## Route: /conformance
+
+## Conformance Checklist
+
+This checklist consolidates the requirements for validating project conformance:
+
+- The project root contains `FISS/INDEX.md` and `FISS/BOOTSTRAP.md`.
+- The root index links to `FISS/BOOTSTRAP.md` with a read condition requiring it before work begins on the project.
+- The root index is recommended to reference the adopted standard edition: official website `https://fiss.vorozhko.ru` and/or GitHub mirror `https://github.com/AndreyVorozhko/fiss` as fallback.
+- Every used area is reachable via navigation from the root index; composite areas contain an `INDEX.md` linking to their contents.
+- Every index navigation link is formatted as a strict two-line entry with the mandatory English read condition marker `Read when:` defining context applicability, and resolves to an existing target.
+- If overrides are used, the root index links to `FISS/overrides/INDEX.md` with the read condition "Read when: using or preparing to use any skill"; agents check applicable documents before running skills.
+- If skills share operational artifacts, default filenames and path override rules are coordinated between skills and project documentation.
+- Single-file areas may use project-defined filenames; containers without an index are reachable through navigation of their enclosing area.
+- If the `FISS/knowledge/` directory is used, it contains only a `subject` area (directory or file) and/or a `project` area (directory or file); files do not reside directly in the root of `FISS/knowledge/`.
+- If the `FISS/human/` directory is used, it contains only a `knowledge` area (directory or file) and/or an `hmm` area (directory or file); files do not reside directly in the root of `FISS/human/`.
+- If the `FISS/state/` directory is used, individual state documents may reside directly in it, while item registries (ADRs, risks, open questions) are organized as composite areas with `INDEX.md` or consolidated single files, rather than scattered loose files.
+- The FISS handoff state is recorded in one resolved logical artifact or canonical state mechanism; it identifies the current work item (or links to its canonical source) and does not duplicate task status or create a task registry.
+- Before new independent work begins, the agent determines the handoff state. If no applicable project-defined transition mechanism exists, the agent records the new work as `pending` before substantive work when the state is `synchronized`; it does not start different work from `pending` or `unresolved`. The identified current work may continue while `pending`.
+- Work is handed off as `synchronized` only after its FISS-relevant outcomes have been captured, delegated, or explicitly classified as requiring no persistence. A blocking decision leaves the state `pending` or `unresolved`.
+- Projects may define transition enforcement, but FISS does not require a hook, CI/CD, version control, task tracker, or other enforcement infrastructure.
+- Indexes focus on navigation, while `FISS/BOOTSTRAP.md` provides concise baseline context.
+- Knowledge without `Derived from:` is canonical by default; no separate canonical marker is required.
+- Every derived material uses the exact English marker `Derived from:`, followed by links to all material sources, and those links resolve when the sources are part of the project.
+- Every material in `FISS/human/hmm/` is marked as derived and links to its source or sources.
+- The same knowledge is not maintained by multiple independent canonical sources; suspected semantic duplication that cannot be established mechanically is reviewed by a person.
+- Established source rules are applied when sources conflict; a conflict without such a rule requires an explicit project decision.
+- If a root agent instruction file (`AGENTS.md`) is present, it directs agents to `FISS/INDEX.md` without duplicating space content.
+- If a task workflow is documented, applicable rules for handling operational artifacts are specified.
+
+Other areas and mechanisms are introduced as needed.
+
+Structural checks can be automated. A linting tool (e.g., [`fiss-lint`](https://github.com/AndreyVorozhko/fiss-lint)) can verify required files, link integrity, the two-line navigation format, presence of the mandatory `Read when:` marker, and naming conventions.
+
+Mechanical validation does not assess accuracy, relevance, or completeness of knowledge. Those responsibilities remain with the project team.
+
+
+---
+
+## Route: /ecosystem
+
+## FISS Tool Ecosystem
+
+To support the standard, automate conformance verification, and streamline project workflows, an ecosystem of companion tools is available.
+
+### FISS Linter (`fiss-lint`)
+
+**[`fiss-lint`](https://github.com/AndreyVorozhko/fiss-lint)** is the official static analysis and linting tool for FISS intellectual spaces.
+
+Key capabilities:
+- **Structural verification:** verifies required files (`FISS/INDEX.md`, `FISS/BOOTSTRAP.md`) and directory layouts (`knowledge/`, `human/`, `state/`).
+- **Navigation validation:** enforces the strict two-line index format and the mandatory non-localized `Read when:` marker.
+- **Link integrity:** checks that all index targets resolve to existing files and validates `Derived from:` markers for derived knowledge.
+- **CI/CD integration:** runs fast in developer terminals or automated CI/CD pull request workflows.
+
+Project repository: [github.com/AndreyVorozhko/fiss-lint](https://github.com/AndreyVorozhko/fiss-lint)
+
+### Agent Skills (`fiss-skills`)
+
+**[`fiss-skills`](https://github.com/AndreyVorozhko/fiss-skills)** is a collection of specialized agent skills for AI assistants working within FISS intellectual spaces.
+
+Included skills:
+- **`fiss-maintain`:** maintains intellectual space continuity across task transitions. Updates navigation and links, manages handoff state transitions (`pending` → `synchronized`), resolves operational artifact locations, and persists task context.
+- **`fiss-validate`:** performs read-only structural and semantic validation of the intellectual space against standard invariants without mutating files, complementing static linter checks.
+
+Project repository: [github.com/AndreyVorozhko/fiss-skills](https://github.com/AndreyVorozhko/fiss-skills)
+
+
+---
+
+## Route: /examples
+
+## Examples
+
+Exploring a live, working project is one of the clearest ways to understand how the standard operates in practice.
+
+### Built with love and FISS
+
+- **[`fiss-lint` Intellectual Space](https://github.com/AndreyVorozhko/fiss-lint/tree/main/FISS)** — a reference real-world implementation of the `FISS/` directory structure in the official linter repository.
+
+  It demonstrates:
+  - root entry point organization (`INDEX.md`) with strict `Read when:` read conditions;
+  - concise baseline context (`BOOTSTRAP.md`);
+  - knowledge area structuring (`knowledge/subject/` and `knowledge/project/`);
+  - project-level overrides for external mechanisms and agent skills (`overrides/`);
+  - handoff state tracking and task continuity records (`state/fiss-handoff.md`).
+
+---
+
+Projects adhering to the standard can include a note in their `README.md` or footer:
+
+```markdown
+Built with ღ and [FISS](https://fiss.vorozhko.ru)
+```

@@ -1,0 +1,275 @@
+FISS Specification
+
+Status
+
+This document is the normative core of the File-based Intellectual Space Standard (FISS). Human-facing documentation may explain or illustrate this specification but MUST NOT override it.
+
+The key words MUST, MUST NOT, REQUIRED, SHOULD, SHOULD NOT, and MAY are to be interpreted as normative requirements.
+
+Intellectual Space
+
+An intellectual space is an abstract logical system of knowledge, rules, state, context, and artifacts that supports collaboration between humans and AI agents. It describes what exists in the space and how it is used, not where or in which format it is stored.
+
+This document defines the intellectual-space concept only to the extent needed by FISS. FISS is the complete filesystem-based standard that realizes this model.
+
+Logical Model
+
+An intellectual space contains logical artifacts identified by their purpose rather than by a filesystem path or format. Logical artifacts MAY represent knowledge, rules, current state, operational work, decisions, plans, evidence, or other project information.
+
+Logical artifacts MAY have relationships to one another. An intellectual space SHOULD make relationships understandable and SHOULD allow a person or agent to determine which context is relevant to a particular task. FISS does not require a typed relationship language.
+
+Knowledge is canonical by default. Knowledge is derived only when explicitly marked Derived from: and linked to its source or sources. The same knowledge MUST NOT be maintained independently in multiple places. When the same knowledge is intentionally represented in multiple places, exactly one representation is canonical and every other representation MUST be marked and linked as derived knowledge.
+
+An intellectual space MAY use external mechanisms. An external mechanism is a mechanism used by the intellectual space but not part of the project or its intellectual space. External mechanisms MAY include agent skills, task trackers, documentation systems, version-control systems, tools, and processes.
+
+External mechanisms remain independent of the intellectual space. The project MAY define how an external mechanism is applied within the project and MAY override applicable behavior without modifying the mechanism itself. An override replaces only the behavior it explicitly defines; unspecified behavior remains governed by the external mechanism and other applicable project rules.
+
+Principles of Intellectual Space
+
+- An intellectual space SHOULD start small and grow when content or context needs arise.
+- Information SHOULD be organized so that its applicability to a task can be determined.
+- Navigation and selection of context SHOULD be distinct from detailed content.
+- Durable knowledge, current state, and rules governing changes SHOULD be distinguishable as different information classes.
+- Canonical sources SHOULD remain clear when information has multiple representations.
+- Useful knowledge and changes in context SHOULD be preserved where people and agents can discover them.
+- External mechanisms SHOULD remain independent while project-specific rules define how they are applied.
+
+Other standards MAY define different representations, storage, navigation, or access mechanisms for intellectual spaces while applying these principles. FISS defines the filesystem-based realization below.
+
+FISS — Filesystem Realization
+
+Scope
+
+FISS defines a minimal filesystem-based organization and navigation model for a project's intellectual space.
+
+FISS does not define a project's domain model, architecture, development method, toolchain, task tracker, version-control system, general project lifecycle, skill format, skill discovery, or skill execution. FISS defines only the handoff state needed to preserve continuity of its intellectual space between work items; it does not define how those work items are planned, tracked, executed, or governed.
+
+Methods and artifacts such as DDD, ADR, task trackers, and agent skills are outside FISS. A project MAY organize information about them using FISS.
+
+Definitions
+
+FISS directory
+  The FISS/ directory in a project root. It is the filesystem entry point defined by this specification.
+
+Area
+  A thematically coherent unit in a FISS directory.
+
+Single-file area
+  An area represented by one Markdown file. The filename is determined by the project.
+
+Composite area
+  An area represented by a directory containing INDEX.md.
+
+Container
+  A directory without INDEX.md that groups areas. Its parent index provides navigation to its child areas.
+
+Index
+  An INDEX.md file that provides navigation to a FISS directory or composite area.
+
+Read condition
+  An explicitly marked statement attached to an index link that specifies when the target is applicable context for the work and therefore MUST be read.
+
+Canonical source
+  The authoritative source for particular knowledge or a class of information.
+
+Derived knowledge
+  Knowledge explicitly marked Derived from: and based on the linked source or sources.
+
+Override
+  A project rule that changes or explicitly fixes how an external mechanism is applied in that project.
+
+Operational artifact
+  An artifact used as an active element of a work process, rather than only as a description. A statement, plan, evidence record, or verification result MAY be an operational artifact.
+
+FISS handoff
+  The transfer of an intellectual space between work items, represented by its synchronization state and the reference to the work item currently responsible for that state.
+
+FISS synchronization state
+  The state indicating whether FISS-relevant outcomes are ready to be handed to another independent work item: synchronized, pending, or unresolved.
+
+FISS Handoff Protocol
+  The requirements in this specification for recording and transitioning the FISS synchronization state. It does not define a general task lifecycle or task-status system.
+
+Operational artifacts MAY be located outside the FISS directory while remaining part of the project's intellectual space.
+
+FISS Handoff Protocol
+
+Every conforming FISS implementation MUST support the handoff semantics in this section. A project MAY use an existing canonical operational artifact or state mechanism to represent them; FISS does not require a dedicated file or a fixed path. If a separate artifact is used, it MUST be resolved under the operational-artifact rules and MUST be discoverable through applicable FISS navigation. FISS/state/fiss-handoff.md is a recommended default representation, not a mandatory path.
+
+The handoff record MUST identify the FISS synchronization state and the current work item, or link to the canonical external source of that work item's identity. It MUST NOT duplicate externally owned task status or become a competing task registry. The record MAY include concise context needed to resume or resolve the handoff.
+
+The synchronization states have these meanings:
+
+- synchronized: FISS-relevant outcomes of the preceding work are captured or explicitly classified, applicable FISS relationships are updated, and the space is ready for the next independent work item.
+- pending: A work item is current, or its FISS-relevant outcomes have not yet been fully synchronized. This is a normal intermediate state. It permits continuation of the work item identified by the handoff, but blocks starting a different independent work item.
+- unresolved: Synchronization cannot be completed because a material conflict, ambiguity, or blocker requires a human or project decision. This state blocks a different independent work item.
+
+When a new independent work item begins from synchronized, the handoff MUST be updated to identify that work item and set the state to pending before substantive work begins. A continuation of the already identified work item MUST NOT be treated as a new independent work item.
+
+When a work item ends, its FISS-relevant outcomes MUST be captured in the appropriate canonical sources, delegated for integration, or explicitly determined not to require persistence. The handoff MUST NOT remain synchronized while this work is incomplete or its record identifies stale current work. Once synchronization is complete, the state MUST become synchronized. If synchronization is blocked, it MUST remain pending or become unresolved when a decision is required.
+
+A project MAY specify a mechanism that performs or enforces handoff transitions. An agent MUST follow an applicable project-defined mechanism. FISS does not require hooks, CI/CD, agent orchestration, a task runner, version control, or any other enforcement infrastructure.
+
+Before starting any new independent work item, an agent MUST determine the current FISS synchronization state using the resolved handoff representation. If the project has not defined an applicable transition mechanism, the following standard agent behavior is REQUIRED:
+
+1. If the state is synchronized, record the new work item and set the state to pending before performing substantive work.
+2. If the state is pending, do not start a different independent work item. The agent MAY continue the work item identified by the handoff.
+3. If the state is unresolved, do not start a different independent work item. Continue only after applying an explicit project resolution rule or obtaining the decision needed to resolve the blocker.
+4. If the current state or the identity of the work item cannot be determined, do not start substantive work; resolve the ambiguity with the project or a human.
+
+An agent MUST NOT infer synchronization from task completion, risk level, or confidence alone.
+
+Conforming FISS Directory
+
+A conforming FISS directory MUST contain:
+
+FISS/
+├── INDEX.md
+└── BOOTSTRAP.md
+
+FISS/INDEX.md MUST link to FISS/BOOTSTRAP.md with a read condition requiring it before work begins on the project.
+
+FISS/INDEX.md SHOULD reference the adopted FISS standard specification or its official repository mirror to establish the edition in use; providing both the primary specification and an official repository mirror fallback is RECOMMENDED.
+
+FISS/BOOTSTRAP.md is content, not an index. It MUST provide the minimum project context required for initial orientation.
+
+Every used area MUST be reachable from FISS/INDEX.md through indexes. A composite area MUST have an INDEX.md. Every index link MUST have a read condition and MUST resolve to an existing target.
+
+A container MUST NOT require its own index; its child areas MUST be reachable through the navigation of an enclosing index.
+
+Navigation
+
+An index MUST contain navigation and information required to select context. It MUST NOT be the primary location for detailed area content.
+
+Every navigation entry in an index MUST be formatted strictly as a two-line list item:
+
+1. A Markdown link identifying the target file or index: - Title
+2. An attached line indented by two spaces containing the read condition marker followed by a non-empty read condition:   Read when: <condition>
+
+The read condition marker MUST always be the English text Read when:. It MUST NOT be localized or translated into other languages, ensuring unambiguous and deterministic parsing by automated tools and linters.
+
+The condition text following the marker MUST be non-empty and MUST state the situational trigger (such as task type, lifecycle phase, or specific condition) under which the target is applicable context and MUST be read. An index link MUST NOT use a passive description of contents in place of a read condition.
+
+A read condition defines entry into applicable context rather than prescribing file lifecycle operations. If work under that condition alters the information, rules, state, or relationships described by the material, the material MUST be updated to reflect the outcome of the work.
+
+An index link MUST target a Markdown file or the INDEX.md of a composite area. An index link MUST NOT target a bare directory without INDEX.md.
+
+An index for a composite area MUST provide navigation to its material and child areas. The same rules apply to root and nested indexes.
+
+When an area represented by a file becomes a composite area, all incoming links MUST be updated to its new index. Material in a single-file area SHOULD be organized into modular, logically coherent sections from the outset to facilitate extraction into separate documents or child areas when the content expands.
+
+Information Classes
+
+FISS defines no required areas other than the root files. A project MAY create areas for the following information classes:
+
+Area — Purpose
+FISS/knowledge/subject/ — Durable knowledge about the subject domain.
+FISS/knowledge/project/ — Durable knowledge about the project as a system and work object.
+FISS/state/ — Current information that can affect work.
+FISS/overrides/ — Project overrides for external mechanisms used by the project.
+FISS/human/knowledge/ — Standalone knowledge intended primarily for humans.
+FISS/human/hmm/ — Derived representations of knowledge in the Human Mental Model.
+
+When FISS/knowledge/ is used, it MUST function as a container containing either a subject area (directory subject/ or single-file area subject.md), a project area (directory project/ or single-file area project.md), or both. Files MUST NOT be placed directly in FISS/knowledge/ outside of subject and project.
+
+When FISS/human/ is used, it MUST function as a container containing either a knowledge area (directory knowledge/ or single-file area knowledge.md), an hmm area (directory hmm/ or single-file area hmm.md), or both. Files MUST NOT be placed directly in FISS/human/ outside of knowledge and hmm.
+
+When FISS/state/ is used, individual state documents (such as fiss-handoff.md) MAY reside directly within it. When a registry of state items (such as architectural decisions, risks, or open questions) is maintained, its items MUST NOT be scattered loosely across FISS/state/; the registry MUST be structured either as a dedicated composite area (a directory with INDEX.md) or as a consolidated single-file area.
+
+Subject terms and project terms MAY be stored in separate glossaries. A term with the same meaning in multiple areas SHOULD have one definition and references from other areas. Different meanings of the same word MUST have separate definitions with their applicable area identified.
+
+Knowledge in FISS/human/knowledge/ is canonical by default unless it is explicitly marked as derived. Materials in FISS/human/hmm/ are derived Human Mental Model representations. Every such material MUST contain Derived from: and link to one or more source materials. Those sources MAY reside in any relevant area of the intellectual space, including FISS/knowledge/project/, FISS/knowledge/subject/, FISS/state/, and FISS/human/knowledge/. An HMM representation MUST NOT become canonical merely by existing.
+
+If an external system is a canonical source for current state, FISS MUST NOT create a competing registry of the same information without an explicit source rule.
+
+Canonical Sources and Conflicts
+
+Knowledge is canonical by default. The absence of Derived from: means that material is a canonical source for the knowledge it contains. Canonicality is a property of particular knowledge and its source, not of a FISS directory or area. Particular knowledge MUST have exactly one canonical source.
+
+The only marker for derived knowledge is the exact English text Derived from:. The marker MUST NOT be localized. It MUST be followed by one or more Markdown links that lead directly to the source materials from which the derived knowledge was produced. When derived knowledge is based on multiple sources, the marker MUST link to every material source needed to understand its origin and verify it. FISS does not define YAML front matter or a separate relationship language for this purpose.
+
+For example:
+
+Derived from:
+- Project architecture
+- Payment domain
+
+The same knowledge MUST NOT be maintained independently in multiple places in the intellectual space. If the same knowledge is intentionally represented in multiple places, one representation MUST be canonical and every other representation MUST be derived, contain Derived from:, and link to its source or sources. This rule concerns duplication of knowledge, not identical text fragments or distinct representations: for example, an architecture diagram and a detailed architecture description MAY coexist when the diagram is explicitly derived from the detailed source.
+
+Derived knowledge does not become canonical merely by existing. When a canonical source changes, related derived knowledge SHOULD be reviewed and updated as needed.
+
+When sources conflict, an agent or human MUST apply the established source rule. If no rule exists, the conflict requires an explicit project decision.
+
+Markdown links and concise explanations are sufficient to express relationships between artifacts. FISS does not require a typed relationship language.
+
+Project Overrides
+
+Overrides are OPTIONAL. A project with overrides MUST expose FISS/overrides/INDEX.md from FISS/INDEX.md as the override entry point.
+
+The entry-point link MUST have a read condition requiring it before use of any skill.
+
+FISS/overrides/ is a composite area. A project MUST use it as the override entry point and MUST NOT maintain a parallel override entry point elsewhere.
+
+Before using a skill, an agent MUST read the override entry point when it exists. The agent MUST then read only the override documents whose read conditions apply to the current work.
+
+Override navigation MUST be based on the subject of a rule, not on a skill name. An override read condition MUST NOT require a particular skill name.
+
+A composite FISS/overrides/ area MAY organize overrides for a particular external mechanism within a dedicated container. For example, skill behavior overrides MAY be organized within a skills/ container (FISS/overrides/skills/open-questions.md). Such documents define how the corresponding mechanism is adapted for the project.
+
+Overrides MAY define rules for:
+
+- behaviors, lifecycles, and state transitions of external mechanisms;
+- human approval, autonomy, review, and escalation;
+- artifact locations and naming;
+- artifact formats and templates;
+- verification and completion criteria;
+- agent orchestration and execution limits;
+- context and memory handling;
+- project language, interaction style, and author voice.
+
+An override replaces only the behavior it explicitly defines. For unspecified behavior, an agent MUST apply, in order:
+
+1. other explicit project rules and canonical sources;
+2. an applicable repository convention;
+3. the skill default.
+
+An override that conflicts with another explicit project rule MUST be resolved using the project's source rules. An agent that cannot apply an override MUST report the condition to a human.
+
+An override is a canonical human-readable document. A machine-readable representation MAY exist only as derived knowledge of that document, MUST contain Derived from: with a link to it, and MUST NOT be independently maintained as a competing source.
+
+Operational Artifacts and Skills
+
+A skill that uses a project artifact MUST identify it by logical purpose. A skill MAY define a default filename for an operational artifact. A default filename MUST NOT be treated as a fixed project path.
+
+A project MAY define either:
+
+- a shared directory for operational artifacts of the current task; or
+- an explicit full path for a specific logical artifact.
+
+An explicit full path for a logical artifact takes precedence over a shared directory and a skill's default filename. If only a shared directory is defined, the resolved path is the shared directory plus the skill's default filename.
+
+Before reading or creating an operational artifact, an agent MUST resolve its location in this order:
+
+1. explicit project path for the logical artifact;
+2. shared task-artifact directory plus the default filename;
+3. repository convention or skill default.
+
+Skills that use the same logical operational artifact in one task MUST resolve it to the same location. An agent MUST NOT create a second instance solely because another location was expected. Conflicting locations MUST be resolved using the project's source rules.
+
+For parallel tasks, a project MUST provide separate task workspaces or another unambiguous method to distinguish operational artifacts.
+
+Agent Entry Point
+
+If a project uses AGENTS.md or another root instruction file for AI agents, that file MUST direct agents to FISS/INDEX.md and MUST NOT duplicate space content.
+
+Conformance
+
+A project conforms to FISS if it satisfies all applicable MUST and MUST NOT requirements in this document.
+
+The FISS Handoff Protocol is an applicable requirement for every conforming FISS implementation. A project MAY rely on the standard agent fallback above without additional enforcement infrastructure.
+
+License
+
+FISS is distributed under the MIT license.
+
+Copyright © 2026 Andrey Vorozhko.
