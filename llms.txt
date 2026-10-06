@@ -87,6 +87,9 @@ FISS handoff
 FISS synchronization state
   The state indicating whether FISS-relevant outcomes are ready to be handed to another independent work item: synchronized, pending, or unresolved.
 
+FISS-relevant outcome
+  An outcome of work that changes information, rules, state, or relationships that the intellectual space represents and preserves. Operational work that uses the intellectual space as context without changing what it represents produces no FISS-relevant outcomes.
+
 FISS Handoff Protocol
   The requirements in this specification for recording and transitioning the FISS synchronization state. It does not define a general task lifecycle or task-status system.
 
@@ -100,13 +103,13 @@ The handoff record MUST identify the FISS synchronization state and the current 
 
 The synchronization states have these meanings:
 
-- synchronized: FISS-relevant outcomes of the preceding work are captured or explicitly classified, applicable FISS relationships are updated, and the space is ready for the next independent work item.
+- synchronized: Any FISS-relevant outcomes of the preceding work are captured or explicitly classified, applicable FISS relationships are updated, and the space is ready for the next independent work item. Work that produced no FISS-relevant outcomes leaves the state synchronized.
 - pending: A work item is current, or its FISS-relevant outcomes have not yet been fully synchronized. This is a normal intermediate state. It permits continuation of the work item identified by the handoff, but blocks starting a different independent work item.
 - unresolved: Synchronization cannot be completed because a material conflict, ambiguity, or blocker requires a human or project decision. This state blocks a different independent work item.
 
 When a new independent work item begins from synchronized, the handoff MUST be updated to identify that work item and set the state to pending before substantive work begins. A continuation of the already identified work item MUST NOT be treated as a new independent work item.
 
-When a work item ends, its FISS-relevant outcomes MUST be captured in the appropriate canonical sources, delegated for integration, or explicitly determined not to require persistence. The handoff MUST NOT remain synchronized while this work is incomplete or its record identifies stale current work. Once synchronization is complete, the state MUST become synchronized. If synchronization is blocked, it MUST remain pending or become unresolved when a decision is required.
+When a work item that produced FISS-relevant outcomes ends, those outcomes MUST be captured in the appropriate canonical sources, delegated for integration, or explicitly determined not to require persistence. The handoff MUST NOT remain synchronized while this work is incomplete or its record identifies stale current work. Once synchronization of FISS-relevant outcomes is complete, the state MUST become synchronized. If synchronization is blocked, it MUST remain pending or become unresolved when a decision is required. Work that produced no FISS-relevant outcomes leaves the synchronization state unchanged.
 
 A project MAY specify a mechanism that performs or enforces handoff transitions. An agent MUST follow an applicable project-defined mechanism. FISS does not require hooks, CI/CD, agent orchestration, a task runner, version control, or any other enforcement infrastructure.
 
@@ -150,7 +153,7 @@ The read condition marker MUST always be the English text Read when:. It MUST NO
 
 The condition text following the marker MUST be non-empty and MUST state the situational trigger (such as task type, lifecycle phase, or specific condition) under which the target is applicable context and MUST be read. An index link MUST NOT use a passive description of contents in place of a read condition.
 
-A read condition defines entry into applicable context rather than prescribing file lifecycle operations. If work under that condition alters the information, rules, state, or relationships described by the material, the material MUST be updated to reflect the outcome of the work.
+A read condition defines entry into applicable context rather than prescribing file lifecycle operations. If work under that condition produces a FISS-relevant outcome by altering the information, rules, state, or relationships described by the material, the material MUST be updated to reflect that outcome.
 
 An index link MUST target a Markdown file or the INDEX.md of a composite area. An index link MUST NOT target a bare directory without INDEX.md.
 

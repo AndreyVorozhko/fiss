@@ -23,7 +23,7 @@ Project repository: [github.com/AndreyVorozhko/fiss-lint](https://github.com/And
 **[`fiss-skills`](https://github.com/AndreyVorozhko/fiss-skills)** is a collection of specialized agent skills for AI assistants working within FISS intellectual spaces.
 
 Included skills:
-- **`fiss-maintain`:** maintains intellectual space continuity across task transitions. Updates navigation and links, manages handoff state transitions (`pending` → `synchronized`), resolves operational artifact locations, and persists task context.
+- **`fiss-maintain`:** maintains intellectual space continuity across task transitions. Updates navigation and links, manages handoff state transitions (`pending` → `synchronized`) for work that produces FISS-relevant outcomes, resolves operational artifact locations, and persists task context.
 - **`fiss-validate`:** performs read-only structural and semantic validation of the intellectual space against standard invariants without mutating files, complementing static linter checks.
 
 Project repository: [github.com/AndreyVorozhko/fiss-skills](https://github.com/AndreyVorozhko/fiss-skills)
